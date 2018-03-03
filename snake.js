@@ -7,7 +7,7 @@ var iWidth = getCanvas.width;
 var iHeight = getCanvas.height;
 const speed = 200;
 
-const gridSize = 10;
+const gridSize = 20;
 
 var snakeBody = [];
 snakeBody[0] = {
@@ -19,8 +19,12 @@ snakeBody[1] = {
     y: 20*gridSize
 }
 
-var direction = "left";
-
+var direction = "right";
+var food = {
+    // num between 0*10 to 59*10
+    x: Math.round((Math.random()*(iWidth - gridSize)/gridSize))*gridSize,
+    y: Math.round((Math.random()*(iHeight - gridSize)/gridSize))*gridSize
+}
 
 document.addEventListener("keydown", stopInterval.bind(this));
 document.addEventListener("keydown", arrowControl.bind(this));
@@ -49,10 +53,18 @@ function drawSnake() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     // draw snake
     for(i = 0; i < snakeBody.length; i++){
-        ctx.fillStyle = 'green';    
-        ctx.fillRect(snakeBody[i].x,snakeBody[i].y,gridSize,gridSize);
+        ctx.fillStyle = (i == 0) ? 'blue' : 'green';    
+        ctx.fillRect(snakeBody[i].x, snakeBody[i].y, gridSize, gridSize);
         console.log(snakeBody[i].x, snakeBody[i].y);
+
+            ctx.strokeStyle = 'white';
+        ctx.strokeRect(snakeBody[i].x, snakeBody[i].y, gridSize, gridSize);
     }  
+    // draw food
+    ctx.fillStyle = 'white';    
+    ctx.fillRect(food.x, food.y, gridSize, gridSize);
+    ctx.strokeStyle = 'white';
+    ctx.strokeRect(food.x, food.y, gridSize, gridSize);
     // privious head position
     var hx = snakeBody[0].x;
     var hy = snakeBody[0].y;
