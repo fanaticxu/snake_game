@@ -3,7 +3,6 @@
 I'm trying to build a snake game using js.
 
 Function wish list:
-- Need a function 
 
 ### 2 Mar 2018
 - Add canvas.
@@ -14,3 +13,16 @@ Function wish list:
 - Add arrow key event listener.
 - Add moveUp, moveDown, moveLeft, moveRight function.
 - Add move function press the arrow key move accordingly.
+
+### 4 Mar 2018
+- Mind Map
+```
+put the coordinate of the snake body in an array.
+
+every interval time, pop the tail coordinate and unshift the new head according to the derection. 
+
+
+```
+- !!! add ```ctx.fillRect(0, 0, canvas.width, canvas.height);``` into draw function. reprint the page every "speed" ms.
+- Add array of the snake body.
+- Modify draw function, now I can control the snake move correctly.

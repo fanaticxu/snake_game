@@ -5,168 +5,97 @@ var ctx = getCanvas.getContext("2d");
 
 var iWidth = getCanvas.width;
 var iHeight = getCanvas.height;
+const speed = 200;
+
 const gridSize = 10;
-const speed = 100;
 
-var init_x = getRandomXY();
-var init_y = getRandomXY();
-var headerX, headerY;
-var x = getRandomXY();
-var y = getRandomXY();
-var Dirction = moveRight;
-var intervalTag = 1;
+var snakeBody = [];
+snakeBody[0] = {
+    x: 10*gridSize,
+    y: 20*gridSize
+}
+snakeBody[1] = {
+    x: 9*gridSize,
+    y: 20*gridSize
+}
 
-document.addEventListener("keypress", stopInterval.bind(this));
+var direction = "left";
+
+
+document.addEventListener("keydown", stopInterval.bind(this));
 document.addEventListener("keydown", arrowControl.bind(this));
 
 
-draw(init_x, init_y);
-
 function arrowControl(event) {
-    if(event.keyCode == 37){
-        stop();
+    if(event.keyCode == 37 && direction != "right"){
         console.log("left"); 
-        Dirction = moveLeft;     
-        intervalTag = setInterval(Dirction, speed);
-    } else if(event.keyCode == 38){
-        stop();
+        direction = "left";
+    } else if(event.keyCode == 38 && direction != "down"){
         console.log("up");
-        Dirction = moveUp;
-        intervalTag = setInterval(Dirction, speed);
-    } else if(event.keyCode == 39){
-        stop();
+        direction = "up";
+    } else if(event.keyCode == 39 && direction != "left"){
         console.log("right");
-        Dirction = moveRight;
-        intervalTag = setInterval(Dirction, speed);
-    } else if(event.keyCode == 40){
-        stop();
+        direction = "right";
+    } else if(event.keyCode == 40 && direction != "up"){
         console.log("down");
-        Dirction = moveDown;
-        intervalTag = setInterval(Dirction, speed);
-    } else {
-        stopInterval(event);
-    }
+        direction = "down";
+    } 
 }
 
+function drawSnake() {
+
+    // repaint the canvas every "speend" ms
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // draw snake
+    for(i = 0; i < snakeBody.length; i++){
+        ctx.fillStyle = 'green';    
+        ctx.fillRect(snakeBody[i].x,snakeBody[i].y,gridSize,gridSize);
+        console.log(snakeBody[i].x, snakeBody[i].y);
+    }  
+    // privious head position
+    var hx = snakeBody[0].x;
+    var hy = snakeBody[0].y;
+    // delete the tail
+    snakeBody.pop();
+    // check snake head direction 
+    if(direction == "left") {
+        if(hx < gridSize){
+            hx = hx + iWidth + gridSize;  
+        }     
+        hx-=gridSize;
+    }
+    if(direction == "right") {
+        if(hx > iWidth - gridSize){
+            hx = hx - iWidth - gridSize;  
+        }
+        hx+=gridSize;
+    }
+    if(direction == "up") {
+        if(hy < gridSize){
+            hy = hy + iHeight + gridSize;  
+        }     
+        hy-=gridSize;
+    }
+    if(direction == "down") {
+        if(hy > iHeight - gridSize){
+            hy = hy - iHeight - gridSize;  
+        }     
+        hy+=gridSize;
+    }
+    // add the new head
+    snakeBody.unshift({x: hx, y: hy});
+
+} 
+
+
+
+// stop the snake by press enter
 function stopInterval(event) {
-    if(event.keyCode == 13){
+    console.log(event.keyCode);
+    if(event.keyCode == 32){
         clearInterval(intervalTag);
     } 
 }
 
-// drawGrid()
-
-function getRandomXY() {
-    return gridSize*getRandomInt(iWidth/gridSize - 1);
-}
-
-
-function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
-
-
-function draw(x, y){
-    ctx.fillStyle = 'green';    
-    ctx.fillRect(x,y,gridSize,gridSize);
-    console.log(x, y);
-    return
-}
-
-function clear() {
-    ctx.clearRect(x,y,gridSize,gridSize)
-}
-
-function moveRight() {
-    clear(x,y);
-    if(x > iWidth - gridSize){
-      x = x - iWidth - gridSize;  
-    }     
-    x+=gridSize;
-    draw(x, y);
-    prevDirction = "moveRight";
-}
-
-function moveDown() {
-    clear(x,y);
-    if(y > iHeight - gridSize){
-      y = y - iHeight - gridSize;  
-    }     
-    y+=gridSize;
-    draw(x, y);
-    prevDirction = "moveDown";
-}
-
-function moveLeft() {
-    clear(x,y);
-    if(x < gridSize){
-      x = x + iWidth + gridSize;  
-    }     
-    x-=gridSize;
-    draw(x, y);
-    prevDirction = "moveLeft";
-}
-
-function moveUp() {
-    clear(x,y);
-    if(y < gridSize){
-      y = y + iHeight + gridSize;  
-    }     
-    y-=gridSize;
-    draw(x, y);
-    prevDirction = "moveUp";
-}
-
-// move();
-
-
-var stop = function() {
-    clearInterval(intervalTag);
-}
-// function drawGrid() {
-//     var gridOption = {
-//         separation: 10,
-//         color:'#b3e6ff'
-//     }
-//     drawGridLines(getCanvas, gridOption);
-//     return;
-// }
-
-// function drawGridLines(cnv, lineOptions){
-//   var iWidth = cnv.width;
-//   var iHeight = cnv.height;
-//   var ctx = cnv.getContext('2d');
-//   ctx.strokeStyle = lineOptions.color;
-//   ctx.strokeWidth = 0.5;
-
-//   ctx.beginPath();
-
-//   var iCount = null;
-//   var i = null;
-//   var x = null;
-//   var y = null;
-
-//   iCount = Math.floor(iWidth / lineOptions.separation);
-
-//   for (i = 0; i <= iCount; i++) {
-//     x = (i * lineOptions.separation);
-//     ctx.moveTo(x, 0);
-//     ctx.lineTo(x, iHeight);
-//     ctx.stroke();
-//   }
-
-
-//   iCount = Math.floor(iHeight / lineOptions.separation);
-
-//   for (i = 0; i <= iCount; i++) {
-//     y = (i * lineOptions.separation);
-//     ctx.moveTo(0, y);
-//     ctx.lineTo(iWidth, y);
-//     ctx.stroke();
-//   }
-
-//   ctx.closePath();
-
-//   return;
-
-// }
+var intervalTag = setInterval(drawSnake, speed);
