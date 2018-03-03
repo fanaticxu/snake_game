@@ -2,23 +2,64 @@ console.log("started.");
 
 var getCanvas = document.getElementById("canvas");
 var ctx = getCanvas.getContext("2d");
-var x = 0;
-var y = 0;
 
+var iWidth = getCanvas.width;
+var iHeight = getCanvas.height;
+const gridSize = 10;
+const speed = 100;
+
+var init_x = getRandomXY();
+var init_y = getRandomXY();
+var headerX, headerY;
+var x = getRandomXY();
+var y = getRandomXY();
+var Dirction = moveRight;
+var intervalTag = 1;
+
+document.addEventListener("keypress", stopInterval.bind(this));
 document.addEventListener("keydown", arrowControl.bind(this));
-// ctx.fillRect(0,0,8,8);
-// // ctx.stroke();
-// ctx.fillRect(x,y,8,8);
-// ctx.fillStyle = 'green';
+
+
+draw(init_x, init_y);
 
 function arrowControl(event) {
-    event.keyCode == 37 ? console.log("left") : event.keyCode == 38 ? console.log("up") : event.keyCode == 39 ? console.log("right") : event.keyCode == 40 ? console.log("down") : console.log(event.keyCode);
+    if(event.keyCode == 37){
+        stop();
+        console.log("left"); 
+        Dirction = moveLeft;     
+        intervalTag = setInterval(Dirction, speed);
+    } else if(event.keyCode == 38){
+        stop();
+        console.log("up");
+        Dirction = moveUp;
+        intervalTag = setInterval(Dirction, speed);
+    } else if(event.keyCode == 39){
+        stop();
+        console.log("right");
+        Dirction = moveRight;
+        intervalTag = setInterval(Dirction, speed);
+    } else if(event.keyCode == 40){
+        stop();
+        console.log("down");
+        Dirction = moveDown;
+        intervalTag = setInterval(Dirction, speed);
+    } else {
+        stopInterval(event);
+    }
+}
+
+function stopInterval(event) {
+    if(event.keyCode == 13){
+        clearInterval(intervalTag);
+    } 
 }
 
 // drawGrid()
-var init_x, init_y;
-init_x = 10*getRandomInt(59);
-init_y = 10*getRandomInt(59);
+
+function getRandomXY() {
+    return gridSize*getRandomInt(iWidth/gridSize - 1);
+}
+
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
@@ -27,28 +68,61 @@ function getRandomInt(max) {
 
 function draw(x, y){
     ctx.fillStyle = 'green';    
-    ctx.fillRect(x,y,10,10);
+    ctx.fillRect(x,y,gridSize,gridSize);
     console.log(x, y);
     return
 }
 
 function clear() {
-    ctx.clearRect(x,y,10,10)
+    ctx.clearRect(x,y,gridSize,gridSize)
 }
 
-function move() {
-    if(x < 590){        
-        clear(x,y);
-        x+=10;
-        draw(x, y);
-    }
+function moveRight() {
+    clear(x,y);
+    if(x > iWidth - gridSize){
+      x = x - iWidth - gridSize;  
+    }     
+    x+=gridSize;
+    draw(x, y);
+    prevDirction = "moveRight";
 }
 
-draw(init_x, init_y);
-move();
-// setInterval ( move, 500 );
+function moveDown() {
+    clear(x,y);
+    if(y > iHeight - gridSize){
+      y = y - iHeight - gridSize;  
+    }     
+    y+=gridSize;
+    draw(x, y);
+    prevDirction = "moveDown";
+}
+
+function moveLeft() {
+    clear(x,y);
+    if(x < gridSize){
+      x = x + iWidth + gridSize;  
+    }     
+    x-=gridSize;
+    draw(x, y);
+    prevDirction = "moveLeft";
+}
+
+function moveUp() {
+    clear(x,y);
+    if(y < gridSize){
+      y = y + iHeight + gridSize;  
+    }     
+    y-=gridSize;
+    draw(x, y);
+    prevDirction = "moveUp";
+}
+
+// move();
 
 
+var stop = function() {
+    clearInterval(intervalTag);
+}
 // function drawGrid() {
 //     var gridOption = {
 //         separation: 10,
