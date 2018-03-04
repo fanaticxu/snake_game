@@ -26,3 +26,5 @@ every interval time, pop the tail coordinate and unshift the new head according 
 - !!! add ```ctx.fillRect(0, 0, canvas.width, canvas.height);``` into draw function. reprint the page every "speed" ms.
 - Add array of the snake body.
 - Modify draw function, now I can control the snake move correctly.
+- Add border to each grid. Add random food position.
+- Add eat food, after eat food generate a new food

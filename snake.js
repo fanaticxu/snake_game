@@ -5,7 +5,7 @@ var ctx = getCanvas.getContext("2d");
 
 var iWidth = getCanvas.width;
 var iHeight = getCanvas.height;
-const speed = 200;
+const speed = 100;
 
 const gridSize = 20;
 
@@ -13,11 +13,17 @@ var snakeBody = [];
 snakeBody[0] = {
     x: 10*gridSize,
     y: 20*gridSize
-}
+};
 snakeBody[1] = {
     x: 9*gridSize,
     y: 20*gridSize
-}
+};
+snakeBody[2] = {
+    x: 8*gridSize,
+    y: 20*gridSize
+};
+var hx = snakeBody[0].x;
+var hy = snakeBody[0].y;
 
 var direction = "right";
 var food = {
@@ -56,20 +62,41 @@ function drawSnake() {
         ctx.fillStyle = (i == 0) ? 'blue' : 'green';    
         ctx.fillRect(snakeBody[i].x, snakeBody[i].y, gridSize, gridSize);
         console.log(snakeBody[i].x, snakeBody[i].y);
-
-            ctx.strokeStyle = 'white';
+        // draw border
+        ctx.strokeStyle = 'white';
         ctx.strokeRect(snakeBody[i].x, snakeBody[i].y, gridSize, gridSize);
-    }  
-    // draw food
+    }
+}
+
+function game() {
+    drawSnake();
+    drawFood();
+    eatFood();
+    setDirection();
+    isBite();
+} 
+
+function drawFood(){
     ctx.fillStyle = 'white';    
     ctx.fillRect(food.x, food.y, gridSize, gridSize);
     ctx.strokeStyle = 'white';
     ctx.strokeRect(food.x, food.y, gridSize, gridSize);
-    // privious head position
-    var hx = snakeBody[0].x;
-    var hy = snakeBody[0].y;
-    // delete the tail
-    snakeBody.pop();
+}
+
+function newFood(){
+    food = {
+            // num between 0*10 to 59*10
+            x: Math.round((Math.random()*(iWidth - gridSize)/gridSize))*gridSize,
+            y: Math.round((Math.random()*(iHeight - gridSize)/gridSize))*gridSize
+        }
+    // check if food include in the snackbody.
+    if(snakeBody.filter(val => (val.x == food.x && val.y == food.y))[0] !== undefined){
+        newFood();
+    } else {    
+        return food;
+    }
+}
+function setDirection(){
     // check snake head direction 
     if(direction == "left") {
         if(hx < gridSize){
@@ -95,13 +122,31 @@ function drawSnake() {
         }     
         hy+=gridSize;
     }
-    // add the new head
-    snakeBody.unshift({x: hx, y: hy});
 
-} 
+}
 
+function isBite(){
+    if(snakeBody.filter(val => (val.x == hx && val.y == hy))[0] !== undefined){
+        clearInterval(intervalTag);
+        ctx.fillStyle = 'red'; 
+        ctx.fillRect(hx, hy, gridSize, gridSize);
+        // draw border
+        ctx.strokeStyle = 'white';
+        ctx.strokeRect(hx, hy, gridSize, gridSize);
+    } else {
+        // add the new head
+        snakeBody.unshift({x: hx, y: hy});
+    }
+}
 
-
+function eatFood() {
+    if(hx === food.x && hy === food.y){
+        newFood();
+    } else {
+        // delete the tail
+        snakeBody.pop();
+    }
+}
 // stop the snake by press enter
 function stopInterval(event) {
     console.log(event.keyCode);
@@ -110,4 +155,4 @@ function stopInterval(event) {
     } 
 }
 
-var intervalTag = setInterval(drawSnake, speed);
+var intervalTag = setInterval(game, speed);
