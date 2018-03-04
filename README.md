@@ -29,3 +29,4 @@ every interval time, pop the tail coordinate and unshift the new head according 
 - Add border to each grid. Add random food position.
 - Add eat food, after eat food generate a new food
 - Add isBite check. 
+- Add score count

@@ -6,9 +6,8 @@ var ctx = getCanvas.getContext("2d");
 var iWidth = getCanvas.width;
 var iHeight = getCanvas.height;
 const speed = 100;
-
 const gridSize = 20;
-
+var score = 0;
 var snakeBody = [];
 snakeBody[0] = {
     x: 10*gridSize,
@@ -35,6 +34,14 @@ var food = {
 document.addEventListener("keydown", stopInterval.bind(this));
 document.addEventListener("keydown", arrowControl.bind(this));
 
+function game() {
+    drawBackground()
+    drawSnake();
+    drawFood();
+    eatFood();
+    setDirection();
+    isBite();
+} 
 
 function arrowControl(event) {
     if(event.keyCode == 37 && direction != "right"){
@@ -51,12 +58,20 @@ function arrowControl(event) {
         direction = "down";
     } 
 }
-
-function drawSnake() {
-
+function drawBackground() {
     // repaint the canvas every "speend" ms
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Score print:
+    let printScore = 'score: ' + score;
+    ctx.font = "bold 24px verdana, sans-serif ";
+    ctx.fillStyle = "gray";
+    ctx.fillText(printScore, gridSize, iHeight - gridSize);
+
+}
+function drawSnake() {
+
+
     // draw snake
     for(i = 0; i < snakeBody.length; i++){
         ctx.fillStyle = (i == 0) ? 'blue' : 'green';    
@@ -67,14 +82,6 @@ function drawSnake() {
         ctx.strokeRect(snakeBody[i].x, snakeBody[i].y, gridSize, gridSize);
     }
 }
-
-function game() {
-    drawSnake();
-    drawFood();
-    eatFood();
-    setDirection();
-    isBite();
-} 
 
 function drawFood(){
     ctx.fillStyle = 'white';    
@@ -141,6 +148,7 @@ function isBite(){
 
 function eatFood() {
     if(hx === food.x && hy === food.y){
+        score++;
         newFood();
     } else {
         // delete the tail
