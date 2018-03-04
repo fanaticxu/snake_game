@@ -33,6 +33,7 @@ var food = {
 
 document.addEventListener("keydown", stopInterval.bind(this));
 document.addEventListener("keydown", arrowControl.bind(this));
+document.getElementById("restart").addEventListener('click', restartGame);
 
 function game() {
     drawBackground()
@@ -135,6 +136,7 @@ function setDirection(){
 function isBite(){
     if(snakeBody.filter(val => (val.x == hx && val.y == hy))[0] !== undefined){
         clearInterval(intervalTag);
+        intervalTag = 0;
         ctx.fillStyle = 'red'; 
         ctx.fillRect(hx, hy, gridSize, gridSize);
         // draw border
@@ -164,7 +166,37 @@ function stopInterval(event) {
     console.log(event.keyCode);
     if(event.keyCode == 32){
         clearInterval(intervalTag);
+        intervalTag = 0;
     } 
 }
 
+function restartGame(){
+    if(intervalTag == 0){
+
+        score = 0;
+        snakeBody = [];
+        snakeBody[0] = {
+            x: 10*gridSize,
+            y: 20*gridSize
+        };
+        snakeBody[1] = {
+            x: 9*gridSize,
+            y: 20*gridSize
+        };
+        snakeBody[2] = {
+            x: 8*gridSize,
+            y: 20*gridSize
+        };
+        hx = snakeBody[0].x;
+        hy = snakeBody[0].y;
+
+        direction = "right";
+        food = {
+            // num between 0*10 to 59*10
+            x: Math.round((Math.random()*(iWidth - gridSize)/gridSize))*gridSize,
+            y: Math.round((Math.random()*(iHeight - gridSize)/gridSize))*gridSize
+        }
+        intervalTag = setInterval(game, speed);
+    }
+}
 var intervalTag = setInterval(game, speed);
