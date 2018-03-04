@@ -140,6 +140,10 @@ function isBite(){
         // draw border
         ctx.strokeStyle = 'white';
         ctx.strokeRect(hx, hy, gridSize, gridSize);
+            // Game Over
+        ctx.font = "bold 30px verdana, sans-serif ";
+        ctx.fillStyle = "gray";
+        ctx.fillText("Game Over", iWidth/2 - 4*gridSize, iHeight/2 - 5*gridSize);
     } else {
         // add the new head
         snakeBody.unshift({x: hx, y: hy});
